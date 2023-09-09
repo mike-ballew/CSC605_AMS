@@ -61,13 +61,8 @@ public class ApplianceManager {
     public Boolean updateCellValue(String columnName, String primaryKeyColumn, int primaryKeyValue, String newValue) {
         try (Connection connection = DriverManager.getConnection(DATABASE_URL);
              Statement statement = connection.createStatement()) {
-
-            // SQL command to update the cell value
             String updateSQL = "UPDATE " + TABLE_NAME + " SET " + columnName + " = '" + newValue + "'" + " WHERE " + primaryKeyColumn + " = '" + primaryKeyValue + "'";
-
-            // Execute the update command
             int rowsUpdated = statement.executeUpdate(updateSQL);
-
             if (rowsUpdated > 0) {
                 System.out.println("Cell value updated successfully.");
                 return true;
@@ -75,7 +70,6 @@ public class ApplianceManager {
                 System.out.println("No rows were updated. Row with " + primaryKeyColumn + " = " + primaryKeyValue + " not found.");
                 return false;
             }
-
         } catch (SQLException e) {
             System.err.println("Error: " + e.getMessage());
             return false;
