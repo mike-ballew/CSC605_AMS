@@ -2,7 +2,7 @@ package com.example.ams;
 
 import java.sql.*;
 
-public class DatabaseManager {
+public class DatabaseManager<T> {
     public final String DATABASE_URL;
 
     public DatabaseManager(String DATABASE_URL) {
@@ -25,15 +25,14 @@ public class DatabaseManager {
             return false;
         }
     }
-
-    public String getCellValue(String primaryKeyColumnName, String columnName, int primaryKeyValue, String tableName) {
-        String cellValue = null;
+    public T getCellValue(String primaryKeyColumnName, String columnName, T primaryKeyValue, String tableName) {
+        T cellValue = null;
         try (Connection connection = DriverManager.getConnection(DATABASE_URL);
              Statement statement = connection.createStatement()) {
             String selectSQL = "SELECT " + columnName + " FROM " + tableName + " WHERE " + primaryKeyColumnName + " = '" + primaryKeyValue + "'";
             ResultSet resultSet = statement.executeQuery(selectSQL);
             if (resultSet.next()) {
-                cellValue = resultSet.getString(columnName);
+                cellValue = (T) resultSet.getObject(columnName);
             }
         } catch (SQLException e) {
             System.err.println("Error: " + e.getMessage());
@@ -61,7 +60,7 @@ public class DatabaseManager {
         int nextPrimaryKey = 1; // Default value if no rows exist
         try (Connection connection = DriverManager.getConnection(DATABASE_URL);
              Statement statement = connection.createStatement()) {
-            String selectSQL = "SELECT COALESCE(MAX(" + primaryKeyColumn + "), 0) + 1 AS next_key FROM " + tableName;
+            String selectSQL = "SELECT COALESCE(MAX(CAST(" + primaryKeyColumn + " AS INT)), 0) + 1 AS next_key FROM " + tableName;
             ResultSet resultSet = statement.executeQuery(selectSQL);
             if (resultSet.next()) {
                 nextPrimaryKey = resultSet.getInt("next_key");

@@ -10,9 +10,12 @@ import java.io.IOException;
 public class AMS_Application extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(AMS_Application.class.getResource("ApplianceManagement.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Hello!");
+
+        FXMLLoader fxmlLoader = new FXMLLoader(AMS_Application.class.getResource("/ApplianceRegistration.fxml"));
+
+        //Scene scene = new Scene(fxmlLoader.load(), 320, 240);
+        Scene scene = new Scene(fxmlLoader.load(), 400, 550);
+        stage.setTitle("ApplianceManagemantSystem");
         stage.setScene(scene);
         stage.show();
     }
