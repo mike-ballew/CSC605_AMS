@@ -70,5 +70,26 @@ public class DatabaseManager<T> {
         }
         return nextPrimaryKey;
     }
+
+    public int getRowCount(String tableName) {
+        int rowCount = 0;
+
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             Statement statement = connection.createStatement()) {
+
+            // SQL query to get the row count
+            String query = "SELECT COUNT(*) as row_count FROM " + tableName;
+            ResultSet resultSet = statement.executeQuery(query);
+
+            // Retrieve the row count from the result set
+            if (resultSet.next()) {
+                rowCount = resultSet.getInt("row_count");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+
+        return rowCount;
+    }
 }
 
