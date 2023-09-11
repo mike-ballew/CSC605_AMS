@@ -15,7 +15,7 @@ public class ApplianceRegistrationController implements Initializable {
     ApplianceManager applianceManager;
     DatabaseManager databaseManager;
     @FXML private Button button_CancelWindow;
-    @FXML private Button button_Registrator;
+    @FXML private Button button_Registration;
 
     @FXML private ChoiceBox<String> choiceBox_ApplianceType;
 
@@ -32,7 +32,7 @@ public class ApplianceRegistrationController implements Initializable {
     }
 
     @FXML
-    void handelButtonRegistrator(ActionEvent event) {
+    void handelButtonRegistration(ActionEvent event) {
         final String DATABASE_URL = databaseManager.DATABASE_URL;
         final String TABLE_NAME_APPLIANCE_DATA = "ApplianceData";
         final String TABLE_NAME_IMAGE_DATA = "ApplianceImageTypeData";
