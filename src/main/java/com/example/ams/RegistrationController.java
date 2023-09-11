@@ -7,10 +7,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.util.HashMap;
-import java.util.Map;
-
-
 public class RegistrationController {
     @FXML
     private Button createLoginButton;
@@ -20,9 +16,6 @@ public class RegistrationController {
 
     @FXML
     private PasswordField passwordRegistrationField;
-
-    private Map<String, String> userLoginInfo = new HashMap<>();
-
 
     public void onCreateLoginButtonClick() {
         String username = usernameRegistrationField.getText();
@@ -34,17 +27,27 @@ public class RegistrationController {
             System.out.println("Username and password are required.");
             return;
         }
-        // Store the username and password in the dictionary
-        userLoginInfo.put(username, password);
 
-        // Create and show a success alert
-        Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-        successAlert.setTitle("Registration Successful");
-        successAlert.setHeaderText(null);
-        successAlert.setContentText("User registered successfully!");
-        successAlert.showAndWait();
+        final String DATABASE_URL = "jdbc:sqlite:registration_database.sqlite";
+        final String TABLE_NAME = "user_registration";
 
-        Stage stage = (Stage) createLoginButton.getScene().getWindow();
-        stage.close();
+        // Call the addUser method from registrationDatabaseStuff with the required arguments
+        boolean registrationSuccess = registrationDatabaseStuff.addUser(DATABASE_URL, TABLE_NAME, username, password);
+
+        if (registrationSuccess) {
+            // Create and show a success alert
+            Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+            successAlert.setTitle("Registration Successful");
+            successAlert.setHeaderText(null);
+            successAlert.setContentText("User registered successfully!");
+            successAlert.showAndWait();
+
+            // Close the registration window
+            Stage stage = (Stage) createLoginButton.getScene().getWindow();
+            stage.close();
+        } else {
+            // Handle the registration failure, show an error message, etc.
+            System.out.println("Registration failed. Please try again.");
+        }
     }
 }

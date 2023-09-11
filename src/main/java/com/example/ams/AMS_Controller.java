@@ -4,12 +4,20 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.Modality;
 import javafx.scene.Parent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class AMS_Controller {
     @FXML
     private Button loginButton;
@@ -20,9 +28,51 @@ public class AMS_Controller {
     @FXML
     private Button createAccountButton;
 
+    @FXML
+    private TextField loginField;
+
+    @FXML
+    private PasswordField passwordField;
+
     private RegistrationController registrationController;
+
     public void onLoginButtonClick(ActionEvent actionEvent) {
-        wrongPass.setText("Wrong Login Information");
+        String enteredUsername = loginField.getText();
+        String enteredPassword = passwordField.getText();
+
+        // Check the database for the user's credentials
+        boolean isUserValid = checkUserCredentials(enteredUsername, enteredPassword);
+
+        if (isUserValid) {
+            // Log the user in and navigate to the main menu
+            // You can add code to open the main menu here
+
+            // this closes the log in window so that we can go to the next part
+            Stage stage = (Stage) loginButton.getScene().getWindow();
+            stage.close();
+        } else {
+            // Display an error message for invalid login
+            wrongPass.setText("Wrong Login Information");
+        }
+    }
+
+    private boolean checkUserCredentials(String username, String password) {
+        final String DATABASE_URL = "jdbc:sqlite:registration_database.sqlite";
+        final String TABLE_NAME = "user_registration";
+
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM " + TABLE_NAME + " WHERE username = ? AND password = ?")) {
+
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            return resultSet.next(); // True if a row matching the credentials is found, false otherwise
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // Handle any database-related errors
+        }
     }
 
     public void onCreateAccountButtonClick(ActionEvent actionEvent) {
