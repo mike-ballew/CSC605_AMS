@@ -147,6 +147,21 @@ public class ApplianceManagementController implements Initializable {
     }
     @FXML
     void handelRemoveAppliance(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/RemoveAppliance.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Appliance Removal");
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        final String TABLE_NAME_APPLIANCE_DATA = "ApplianceData";
+        int applianceCount = databaseManager.getRowCount(TABLE_NAME_APPLIANCE_DATA);
+        labelApplianceCount.setText("Appliance Count: " + applianceCount);
+        refreshDashboard(applianceCount);
 
 
     }
